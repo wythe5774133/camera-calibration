@@ -355,7 +355,10 @@ If you encounter problems or have suggestions, please check:
 - **支援格式**：JPG, JPEG, PNG, BMP, TIFF, TIF
 - **相容性**：Windows, Linux, macOS
 
-## License | 授權
+## 授權 | License
 
-This project is for educational and research purposes.
-本專案僅供教育和研究使用。
+本程式僅提供盟訊實業股份有限公司使用。
+This program is exclusively provided for use by MengXun Industrial Co., Ltd.
+
+未經授權，禁止複製、修改、分發或商業使用。
+Unauthorized copying, modification, distribution, or commercial use is prohibited.
