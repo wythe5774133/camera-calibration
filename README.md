@@ -33,17 +33,26 @@ camera-calibration/
     └── camera_calibration_YYYY_MM_DD_HH_MM_SS.json  # 標定結果檔案 (含RMS誤差)
 ```
 
-## System Requirements | 系統需求
+## 系統需求 | System Requirements
 
-### Automatic Installation | 自動安裝
-The program will automatically check and install required packages when first run:
-程式首次執行時會自動檢查並安裝所需套件：
+### 手動安裝套件 | Manual Package Installation
+執行程式前請先安裝所需套件：
 
+```bash
+pip install opencv-python numpy
+```
+
+或使用requirements.txt安裝：
+```bash
+pip install -r requirements.txt
+```
+
+### 必要套件 | Required Packages
 - `opencv-python>=4.5.0`
 - `numpy>=1.19.0`
 
-### Python Version | Python版本
-- Python 3.6 or higher | Python 3.6 或更高版本
+### Python版本 | Python Version
+- Python 3.6 或更高版本
 
 ## Quick Start | 快速開始
 
@@ -70,17 +79,16 @@ Edit `config.ini` file to set your camera and calibration board parameters:
 Place 15-30 chessboard calibration photos in the `image/` folder
 將15-30張棋盤格標定照片放入 `image/` 資料夾中
 
-### 4. Run Program | 執行程式
+### 4. 執行程式 | Run Program
 ```bash
 python camera_calibration.py
 ```
 
-The program will:
 程式會自動：
-- Automatically install required packages if missing | 自動安裝缺少的套件
-- Load configuration from config.ini | 從設定檔載入參數  
-- Process all photos in image folder | 處理image資料夾中的所有照片
-- Perform calibration and save results to result folder | 執行校正並將結果保存到result資料夾
+- 從設定檔載入參數
+- 處理image資料夾中的所有照片
+- 執行標定並將結果保存到result資料夾
+- 在終端顯示完整的中文化結果
 
 ## Configuration Details | 設定檔詳細說明
 
@@ -286,11 +294,12 @@ If reprojection error is large, try:
 - Program will automatically prompt correct folder location and complete path | 程式會自動提示正確的資料夾位置和完整路徑
 - If folder doesn't exist, manually create image folder | 如果資料夾不存在，請手動建立image資料夾
 
-### Q6: Package installation fails | 套件安裝失敗
-**Solution | 解決方法：**
-- Check internet connection | 檢查網路連線
-- Try manual installation: `pip install opencv-python numpy` | 嘗試手動安裝：`pip install opencv-python numpy`
-- Update pip: `python -m pip install --upgrade pip` | 更新pip：`python -m pip install --upgrade pip`
+### Q6: 套件安裝失敗 | Package installation fails
+**解決方法：**
+- 檢查網路連線
+- 嘗試手動安裝：`pip install opencv-python numpy`
+- 更新pip：`python -m pip install --upgrade pip`
+- 如果仍有問題，嘗試：`pip install --upgrade pip setuptools wheel`
 
 ### Q7: How to choose appropriate calibration board size? | 如何選擇合適的標定板尺寸？
 **Recommendations | 建議：**
@@ -311,16 +320,16 @@ If reprojection error is large, try:
 - Ensure completely flat, no bending or deformation | 確保完全平整，無彎曲變形
 - Avoid reflective materials | 避免反光材質
 
-## Usage Summary | 使用流程總結
+## 使用流程總結 | Usage Summary
 
-1. **Configuration | 設定**：Edit config.ini to set camera and calibration board parameters | 編輯config.ini設定相機和標定板參數
-2. **Preparation | 準備**：Place calibration photos in `image/` folder | 將標定照片放入 `image/` 資料夾
-3. **Execution | 執行**：Run `python camera_calibration.py` | 運行 `python camera_calibration.py`
-4. **Auto Installation | 自動安裝**：Program automatically installs missing packages | 程式自動安裝缺少的套件
-5. **Loading | 載入**：Program automatically reads configuration file parameters | 程式自動讀取設定檔參數
-6. **Processing | 處理**：Program automatically processes all photos in image folder | 程式自動處理image資料夾中的所有照片
-7. **Results | 查看**：View detailed calibration results in console | 檢視控制台顯示的校正結果
-8. **Output | 取得**：Calibration results saved in `result/` folder with timestamp filename | 校正結果保存在 `result/` 資料夾中，檔名包含時間戳記
+1. **安裝套件**：執行 `pip install opencv-python numpy`
+2. **設定參數**：編輯config.ini設定相機和標定板參數
+3. **準備照片**：將標定照片放入 `image/` 資料夾
+4. **執行程式**：運行 `python camera_calibration.py`
+5. **載入設定**：程式自動讀取設定檔參數
+6. **批次處理**：程式自動處理image資料夾中的所有照片
+7. **查看結果**：檢視控制台顯示的中文化校正結果（含RMS誤差）
+8. **取得輸出**：校正結果保存在 `result/` 資料夾中，檔名包含時間戳記
 
 ## Technical Support | 技術支援
 
