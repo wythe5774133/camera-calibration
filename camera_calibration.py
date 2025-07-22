@@ -52,6 +52,7 @@ class CameraCalibration:
         print(f"  物理焦距: {self.focal_length}mm")
         print(f"  棋盤格內角點: {self.board_size[0]}x{self.board_size[1]}")
         print(f"  方格尺寸: {self.square_size}mm")
+        print(f"  畸變係數項數: {self.distortion_coeffs_count}項")
         
         # 初始化物件點陣列 (3D世界座標)
         self.object_points = []   # 3D真實世界座標系統中的點 
@@ -97,6 +98,15 @@ class CameraCalibration:
             # 讀取程式設定
             self.min_images = config.getint('程式設定', '最少影像數量')
             self.error_threshold = config.getfloat('程式設定', '誤差警告閾值')
+            
+            # 讀取畸變係數項數設定（預設為5項）
+            self.distortion_coeffs_count = config.getint('程式設定', '畸變係數項數')
+            
+            # 驗證畸變係數項數的有效性
+            valid_counts = [5, 8, 12, 14]
+            if self.distortion_coeffs_count not in valid_counts:
+                print(f"警告: 畸變係數項數 {self.distortion_coeffs_count} 無效，使用預設值 5")
+                self.distortion_coeffs_count = 5
             
             # 讀取輸出設定
             self.save_full_matrix = config.getboolean('輸出設定', '保存完整矩陣')
@@ -213,6 +223,73 @@ class CameraCalibration:
             
         return successful_images > 0
     
+    def _get_calibration_flags(self):
+        """
+        根據畸變係數項數設定OpenCV標定參數
+        
+        回傳:
+            flags: OpenCV calibrateCamera使用的flags參數
+        """
+        if self.distortion_coeffs_count == 5:
+            # 5項：k1, k2, k3, p1, p2（OpenCV預設）
+            return 0
+        elif self.distortion_coeffs_count == 8:
+            # 8項：k1, k2, k3, k4, k5, k6, p1, p2
+            return cv2.CALIB_RATIONAL_MODEL
+        elif self.distortion_coeffs_count == 12:
+            # 12項：8項 + s1, s2, s3, s4（薄稜鏡畸變）
+            return cv2.CALIB_RATIONAL_MODEL | cv2.CALIB_THIN_PRISM_MODEL
+        elif self.distortion_coeffs_count == 14:
+            # 14項：12項 + τx, τy（傾斜畸變）
+            return cv2.CALIB_RATIONAL_MODEL | cv2.CALIB_THIN_PRISM_MODEL | cv2.CALIB_TILTED_MODEL
+        else:
+            # 預設使用5項
+            return 0
+    
+    def _get_distortion_names(self):
+        """
+        根據畸變係數項數返回係數名稱列表
+        
+        回傳:
+            names: 畸變係數名稱列表
+        """
+        if self.distortion_coeffs_count == 5:
+            return ["k1_徑向畸變1", "k2_徑向畸變2", "p1_切向畸變1", "p2_切向畸變2", "k3_徑向畸變3"]
+        elif self.distortion_coeffs_count == 8:
+            return ["k1_徑向畸變1", "k2_徑向畸變2", "p1_切向畸變1", "p2_切向畸變2", 
+                   "k3_徑向畸變3", "k4_徑向畸變4", "k5_徑向畸變5", "k6_徑向畸變6"]
+        elif self.distortion_coeffs_count == 12:
+            return ["k1_徑向畸變1", "k2_徑向畸變2", "p1_切向畸變1", "p2_切向畸變2", 
+                   "k3_徑向畸變3", "k4_徑向畸變4", "k5_徑向畸變5", "k6_徑向畸變6",
+                   "s1_薄稜鏡1", "s2_薄稜鏡2", "s3_薄稜鏡3", "s4_薄稜鏡4"]
+        elif self.distortion_coeffs_count == 14:
+            return ["k1_徑向畸變1", "k2_徑向畸變2", "p1_切向畸變1", "p2_切向畸變2", 
+                   "k3_徑向畸變3", "k4_徑向畸變4", "k5_徑向畸變5", "k6_徑向畸變6",
+                   "s1_薄稜鏡1", "s2_薄稜鏡2", "s3_薄稜鏡3", "s4_薄稜鏡4",
+                   "τx_傾斜畸變x", "τy_傾斜畸變y"]
+        else:
+            return ["k1_徑向畸變1", "k2_徑向畸變2", "p1_切向畸變1", "p2_切向畸變2", "k3_徑向畸變3"]
+    
+    def _generate_distortion_dict(self):
+        """
+        根據實際畸變係數生成字典格式的畸變係數資料
+        
+        回傳:
+            distortion_dict: 畸變係數字典
+        """
+        distortion_names = self._get_distortion_names()
+        distortion_dict = {}
+        
+        # 實際畸變係數數量（可能少於設定的項數）
+        actual_count = min(self.distortion_coeffs.shape[1], len(distortion_names))
+        
+        # 根據實際係數數量生成字典
+        for i in range(actual_count):
+            name = distortion_names[i] if i < len(distortion_names) else f"係數_{i+1}"
+            distortion_dict[name] = float(self.distortion_coeffs[0, i])
+        
+        return distortion_dict
+    
     def calibrate_camera(self, image_size):
         """
         執行相機標定計算
@@ -221,10 +298,14 @@ class CameraCalibration:
             image_size: 影像尺寸 (寬度, 高度)
         """
         print(f"\n開始相機標定計算...")
+        print(f"使用 {self.distortion_coeffs_count} 項畸變係數")
         
         if len(self.object_points) == 0:
             print("錯誤: 沒有有效的標定資料")
             return False
+        
+        # 根據畸變係數項數設定標定參數
+        flags = self._get_calibration_flags()
         
         # 執行相機標定
         ret, self.camera_matrix, self.distortion_coeffs, self.rvecs, self.tvecs = cv2.calibrateCamera(
@@ -232,7 +313,8 @@ class CameraCalibration:
             self.image_points,
             image_size,
             None,
-            None
+            None,
+            flags=flags
         )
         
         # 儲存RMS誤差
@@ -278,6 +360,7 @@ class CameraCalibration:
             },
             "標定結果": {
                 "RMS重投影誤差": float(self.rms_error),
+                "畸變係數項數": self.distortion_coeffs_count,
                 "相機內參矩陣": {
                     "fx_像素焦距": float(self.camera_matrix[0, 0]),
                     "fy_像素焦距": float(self.camera_matrix[1, 1]),
@@ -285,13 +368,7 @@ class CameraCalibration:
                     "cy_主點": float(self.camera_matrix[1, 2]),
                     "註記": "fx, fy 為像素焦距，與物理焦距不同"
                 },
-                "畸變係數": {
-                    "k1_徑向畸變1": float(self.distortion_coeffs[0, 0]),
-                    "k2_徑向畸變2": float(self.distortion_coeffs[0, 1]),
-                    "p1_切向畸變1": float(self.distortion_coeffs[0, 2]),
-                    "p2_切向畸變2": float(self.distortion_coeffs[0, 3]),
-                    "k3_徑向畸變3": float(self.distortion_coeffs[0, 4])
-                }
+                "畸變係數": self._generate_distortion_dict()
             },
             "使用影像數量": len(self.object_points)
         }
@@ -325,8 +402,9 @@ class CameraCalibration:
         print("相機內參標定結果")
         print("="*60)
         
-        # 顯示使用的圖片數量
+        # 顯示使用的圖片數量和畸變係數項數
         print(f"\n使用圖片數量: {len(self.object_points)} 張")
+        print(f"畸變係數項數: {self.distortion_coeffs_count} 項")
         
         # 顯示RMS重投影誤差
         if self.rms_error is not None:
@@ -341,12 +419,15 @@ class CameraCalibration:
         print(f"\n完整內參矩陣:")
         print(self.camera_matrix)
         
-        print(f"\n畸變係數:")
-        print(f"  k1 (徑向畸變1): {self.distortion_coeffs[0, 0]:.6f}")
-        print(f"  k2 (徑向畸變2): {self.distortion_coeffs[0, 1]:.6f}")
-        print(f"  p1 (切向畸變1): {self.distortion_coeffs[0, 2]:.6f}")
-        print(f"  p2 (切向畸變2): {self.distortion_coeffs[0, 3]:.6f}")
-        print(f"  k3 (徑向畸變3): {self.distortion_coeffs[0, 4]:.6f}")
+        # 動態顯示畸變係數
+        print(f"\n畸變係數 ({self.distortion_coeffs_count}項):")
+        distortion_names = self._get_distortion_names()
+        
+        # 顯示實際有效的畸變係數數量
+        actual_count = min(self.distortion_coeffs.shape[1], len(distortion_names))
+        for i in range(actual_count):
+            name = distortion_names[i] if i < len(distortion_names) else f"係數_{i+1}"
+            print(f"  {name}: {self.distortion_coeffs[0, i]:.6f}")
         
         print(f"\n完整畸變係數陣列:")
         print(self.distortion_coeffs)
@@ -420,7 +501,9 @@ def main():
     print(f"\n總結:")
     print(f"  焦距: {calibrator.focal_length}mm")
     print(f"  棋盤格尺寸: {calibrator.board_size[0]}x{calibrator.board_size[1]} 個內角點")
+    print(f"  畸變係數項數: {calibrator.distortion_coeffs_count} 項")
     print(f"  使用影像: {len(calibrator.object_points)} 張")
+    print(f"  RMS重投影誤差: {calibrator.rms_error:.4f} 像素")
 
 
 if __name__ == "__main__":
