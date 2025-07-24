@@ -76,11 +76,11 @@ class CameraCalibration:
         """
         config = configparser.ConfigParser()
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        config_path = os.path.join(script_dir, "config.ini")
+        config_path = os.path.join(script_dir, "config", "config.ini")
         
         if not os.path.exists(config_path):
             print(f"錯誤: 找不到設定檔 {config_path}")
-            print("請確保程式目錄中存在 config.ini")
+            print("請確保程式目錄中的config資料夾內存在 config.ini")
             raise FileNotFoundError("找不到設定檔")
         
         config.read(config_path, encoding='utf-8')
@@ -493,6 +493,8 @@ def main():
     
     # 儲存結果到result資料夾，以時間戳記命名
     result_dir = os.path.join(script_dir, "result")
+    # 確保result資料夾存在
+    os.makedirs(result_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     output_file = os.path.join(result_dir, f"camera_calibration_{timestamp}.json")
     calibrator.save_results(output_file)
