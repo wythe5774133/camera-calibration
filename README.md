@@ -463,8 +463,39 @@ If you encounter problems or have suggestions, please check:
 
 ## 授權 | License
 
-本程式僅提供盟訊實業股份有限公司使用。
-This program is exclusively provided for use by MengXun Industrial Co., Ltd.
+This is free and unencumbered software released into the public domain.
 
-未經授權，禁止複製、修改、分發或商業使用。
-Unauthorized copying, modification, distribution, or commercial use is prohibited.
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <https://unlicense.org>
+
+---
+
+本軟體是釋出到公有領域的自由且不受限的軟體。
+
+任何人都可以出於任何目的、商業或非商業性地、以任何方式自由地複製、修改、發布、使用、編譯、銷售或分發本軟體，無論是以原始碼形式還是以編譯後的二進位形式。
+
+在承認著作權法的司法管轄區，本軟體的作者或作者們將本軟體中的任何及所有著作權利益奉獻給公有領域。我們做出此奉獻是為了廣大公眾的利益，並損害我們的繼承人和繼任者的利益。我們打算將此奉獻作為根據著作權法對本軟體所有現在和未來權利的公開永久放棄行為。
+
+本軟體「按原樣」提供，不附有任何明示或暗示的保證，包括但不限於適銷性、特定用途適用性和不侵權的保證。在任何情況下，作者均不對任何索賠、損害或其他責任承擔任何責任，無論是在合約訴訟、侵權行為或其他方面，因本軟體或本軟體的使用或其他交易而產生或與之相關。
+
+更多資訊，請參閱 <https://unlicense.org>
