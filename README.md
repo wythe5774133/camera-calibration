@@ -44,8 +44,10 @@ This program uses OpenCV to perform camera intrinsic parameter calibration throu
 
 ```
 camera-calibration/
+├── dist/
+│   └── camera_calibration_gui_build.exe  # Windows可執行檔 (推薦)
 ├── camera_calibration.py      # 命令行版本主程式
-├── camera_calibration_gui.py  # GUI版本主程式 (推薦新用戶使用)
+├── camera_calibration_gui.py  # GUI版本主程式
 ├── ui_settings.json           # GUI設定記憶檔案 (由GUI自動生成和管理)
 ├── README.md                  # 說明文件
 ├── requirements.txt           # 相依套件清單
@@ -79,41 +81,31 @@ pip install -r requirements.txt
 
 ## Quick Start | 快速開始
 
-### 1. Download and Setup | 下載與設定
-```bash
-# Download the project | 下載專案
-# Extract to desired location | 解壓縮到目標位置
-```
+### 方法一：直接執行 (推薦)
 
-### 2. Prepare Calibration Photos | 準備標定照片
-將15-30張棋盤格標定照片放入 `image/` 資料夾中。
-**提示**：GUI版本允許您瀏覽並選擇任何包含圖像的資料夾。
+此專案已包含打包好的Windows執行檔，無需安裝Python環境即可使用。
 
-Place 15-30 chessboard calibration photos in the `image/` folder.
-**Tip**: The GUI version allows you to browse and select any folder containing images.
+1.  **下載並解壓縮專案**。
+2.  進入 `dist` 資料夾。
+3.  直接按兩下執行 `camera_calibration_gui_build.exe`。
 
-### 3. Run Program | 執行程式
+### 方法二：透過Python原始碼執行
 
-#### **推薦：使用圖形化界面 (GUI) 版本**
-```bash
-python camera_calibration_gui.py
-```
-- GUI會自動載入或生成 `config.ini`。
-- 您可以在GUI中直觀地設定所有參數，並選擇圖像資料夾。
-- 點擊「開始標定」按鈕即可執行。
+如果您需要在 macOS、Linux 或其他環境執行，或者希望自行修改程式碼，可以透過以下步驟執行：
 
-#### **命令行界面 (CLI) 版本**
-```bash
-# 如果您選擇使用CLI版本，請先手動編輯 config/config.ini 檔案
-# If you choose to use the CLI version, please manually edit the config/config.ini file first
-python camera_calibration.py
-```
+1.  **準備環境**:
+    確保您已安裝 Python 3.6+ 並設定好環境變數。接著安裝必要的函式庫：
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-程式會自動：
-- 從設定檔載入參數 (GUI會自動生成，CLI需手動編輯)。
-- 處理指定資料夾中的所有照片。
-- 執行標定並將結果保存到result資料夾。
-- 在終端或GUI結果區顯示完整的中文化結果。
+2.  **準備標定照片**:
+    將15-30張棋盤格標定照片放入 `image/` 資料夾，或在GUI程式中選擇您自己的圖片資料夾。
+
+3.  **執行程式**:
+    ```bash
+    python camera_calibration_gui.py
+    ```
 
 ## Configuration Details | 設定檔詳細說明
 

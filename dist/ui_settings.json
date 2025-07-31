@@ -1,0 +1,14 @@
+{
+    "board_width": 11,
+    "board_height": 7,
+    "square_size": 30.0,
+    "focal_length": 50.0,
+    "error_threshold": 1.0,
+    "distortion_coeffs_count": 8,
+    "save_full_matrix": true,
+    "save_full_distortion": true,
+    "image_folder": "D:\\gimbal-calibration\\camera-calibration\\image",
+    "recent_folders": [
+        "D:\\gimbal-calibration\\camera-calibration\\image"
+    ]
+}
